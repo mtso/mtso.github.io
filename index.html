@@ -1,24 +1,64 @@
----
-layout: default
----
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Matthew</title>
+    <style>
+    html, body {
+      padding: 0;
+      margin: 0;
+      width: 100%;
+      font-family: 'Source Code Pro', 'Courier', monospace, sans-serif;
+    }
+    .container {
+      max-width: 1024px;
+      margin: 0 auto;
+    }
+    .link {
+      font-size: 0.7em;
+    }
+    .repo {
+      margin-bottom: 2em;
+      border-top: 1px solid lightgray;
+    }
+    </style>
 
-<div class="home">
+    <script src="https://unpkg.com/babel-standalone@6.25.0/babel.min.js"></script>
+    <script src="https://unpkg.com/react@15.3.1/dist/react.min.js"></script>
+    <script src="https://unpkg.com/react-dom@15.3.1/dist/react-dom.min.js"></script>
+  </head>
+  <body>
+    <div id="app"></div>
 
-  <h1 class="page-heading">Posts</h1>
+    <script type="text/babel" data-presets="es2015,react">
+      const Projects = (props) => {
+        return (
+          <div className='container'>
+            <h1>My Projects</h1>
+            {props.repos.map(function(repo, index) {
+              return (
+                <div key={index} className='repo'>
+                  <h2 className='title'>{repo.name} <span className='link'>
+                  <a href={repo.html_url}>Code</a></span>
+                  </h2>
+                  <p className='description'>{repo.description}</p>
+                </div>
+              )
+            })}
+          </div>
+        )
+      }
 
-  <ul class="post-list">
-    {% for post in site.posts %}
-      <li>
-        <span class="post-meta">{{ post.date | date: "%b %-d, %Y" }}</span>
-
-        <h2>
-          <a class="post-link" href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
-        </h2>
-        <img src="{{ post.thumbnail-url }}">
-      </li>
-    {% endfor %}
-  </ul>
-
-  <p class="rss-subscribe">subscribe <a href="{{ "/feed.xml" | prepend: site.baseurl }}">via RSS</a></p>
-
-</div>
+      fetch('https://api.github.com/users/mtso/repos?type=all&sort=updated&per_page=100')
+        .then(function(response) {
+          return response.json()
+        })
+        .then(function(data) {
+          ReactDOM.render(
+            <Projects repos={data} />,
+            document.querySelector('#app')
+          )
+        })
+    </script>
+  </body>
+</html>
