@@ -36,7 +36,9 @@
         return (
           <div className='container'>
             <h1>My Projects</h1>
-            {props.repos.map(function(repo, index) {
+            {props.repos.filter(function(repo) {
+              return !!repo.homepage
+            }).map(function(repo, index) {
               return (
                 <div key={index} className='repo'>
                   <h2 className='title'>{repo.name} <span className='link'>
